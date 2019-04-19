@@ -3,6 +3,7 @@ package com.infoshareacademy.web;
 import com.infoshareacademy.dao.StudentDao;
 import com.infoshareacademy.model.Student;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 @WebServlet(urlPatterns = "/student")
 public class StudentServlet extends HttpServlet {
@@ -59,7 +61,8 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
-    private void updateStudent(HttpServletRequest req, HttpServletResponse resp)
+    private void updateStudent(HttpServletRequest req,
+                               HttpServletResponse resp)
         throws IOException {
         final Long id = Long.parseLong(req.getParameter("id"));
         LOG.info("Updating Student with id = {}", id);
@@ -69,6 +72,8 @@ public class StudentServlet extends HttpServlet {
             LOG.info("No Student found for id = {}, nothing to be updated", id);
         } else {
             existingStudent.setName(req.getParameter("name"));
+            existingStudent.setSurname(req.getParameter("surname"));
+            existingStudent.setBirthday(LocalDate.parse(req.getParameter("birthday")));
 
             studentDao.update(existingStudent);
             LOG.info("Student object updated: {}", existingStudent);
@@ -83,6 +88,8 @@ public class StudentServlet extends HttpServlet {
 
         final Student p = new Student();
         p.setName(req.getParameter("name"));
+        p.setSurname(req.getParameter("surname"));
+        p.setBirthday(LocalDate.parse(req.getParameter("birthday")));
 
         studentDao.save(p);
         LOG.info("Saved a new Student object: {}", p);
