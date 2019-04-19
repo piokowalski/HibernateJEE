@@ -1,6 +1,8 @@
 package com.infoshareacademy.web;
 
+import com.infoshareacademy.dao.ComputerDao;
 import com.infoshareacademy.dao.StudentDao;
+import com.infoshareacademy.model.Computer;
 import com.infoshareacademy.model.Student;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -16,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @WebServlet(urlPatterns = "/student")
 public class StudentServlet extends HttpServlet {
 
@@ -25,15 +26,33 @@ public class StudentServlet extends HttpServlet {
     @Inject
     private StudentDao studentDao;
 
+    @Inject
+    private ComputerDao computerDao;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-
         // Test data
+        // Computers
+        Computer c1 = new Computer("Xiaomi Lepsze", "Windows XP SP2");
+        computerDao.save(c1);
+
+        Computer c2 = new Computer("Zenbook", "Fedora");
+        computerDao.save(c2);
+
         // Students
-        studentDao.save(new Student("Michal"));
-        studentDao.save(new Student("Marek"));
+        Student s1 = new Student("Michal",
+            "Graczyk",
+            LocalDate.of(1980, 11, 12),
+            c1);
+        studentDao.save(s1);
+
+        Student s2 = new Student("Marek",
+            "Malinovsky",
+            LocalDate.of(1960, 5, 13),
+            c2);
+        studentDao.save(s2);
 
         LOG.info("System time zone is: {}", ZoneId.systemDefault());
     }
@@ -62,8 +81,7 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
-    private void updateStudent(HttpServletRequest req,
-                               HttpServletResponse resp)
+    private void updateStudent(HttpServletRequest req, HttpServletResponse resp)
         throws IOException {
         final Long id = Long.parseLong(req.getParameter("id"));
         LOG.info("Updating Student with id = {}", id);
@@ -74,7 +92,15 @@ public class StudentServlet extends HttpServlet {
         } else {
             existingStudent.setName(req.getParameter("name"));
             existingStudent.setSurname(req.getParameter("surname"));
-            existingStudent.setBirthday(LocalDate.parse(req.getParameter("birthday")));
+
+            String dateStr = req.getParameter("date");
+            LocalDate date = LocalDate.parse(dateStr);
+            existingStudent.setDateOfBirth(date);
+
+            String cidStr = req.getParameter("cid"); // computer id
+            Long cid = Long.valueOf(cidStr);
+            Computer computer = computerDao.findById(cid); // != null
+            existingStudent.setComputer(computer);
 
             studentDao.update(existingStudent);
             LOG.info("Student object updated: {}", existingStudent);
@@ -90,7 +116,12 @@ public class StudentServlet extends HttpServlet {
         final Student p = new Student();
         p.setName(req.getParameter("name"));
         p.setSurname(req.getParameter("surname"));
-        p.setBirthday(LocalDate.parse(req.getParameter("birthday")));
+        p.setDateOfBirth(LocalDate.parse(req.getParameter("date")));
+
+        String cidStr = req.getParameter("cid"); // computer id
+        Long cid = Long.valueOf(cidStr);
+        Computer computer = computerDao.findById(cid); // != null
+        p.setComputer(computer);
 
         studentDao.save(p);
         LOG.info("Saved a new Student object: {}", p);

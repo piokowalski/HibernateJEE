@@ -1,8 +1,16 @@
 package com.infoshareacademy.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Comparator;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "STUDENTS")
@@ -17,45 +25,27 @@ public class Student {
     @NotNull
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "last_name")
+    @NotNull
     private String surname;
 
-    @Column(name ="birthday")
-    private LocalDate birthday;
+    @Column(name = "date_of_birth")
+    @NotNull
+    private LocalDate dateOfBirth;
 
     @OneToOne
-    @JoinColumn(name ="computer_id", unique = true)
+    @JoinColumn(name = "computer_id", unique = true)
     private Computer computer;
-
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
 
     public Student() {
 
     }
 
-    public Student(String name, String surname, LocalDate birthday, Computer computer) {
+    public Student(String name, String surname, LocalDate dateOfBirth, Computer computer) {
         this.name = name;
         this.surname = surname;
-        this.birthday = birthday;
-    }
-
-    public Student(String name) {
-        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.computer = computer;
     }
 
     public Long getId() {
@@ -74,23 +64,39 @@ public class Student {
         this.name = name;
     }
 
-    public Computer getComputer() {
-        return computer;
+    public String getSurname() {
+        return surname;
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", birthday=" + birthday +
-                ", computer=" + computer +
-                '}';
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Computer getComputer() {
+        return computer;
     }
 
     public void setComputer(Computer computer) {
         this.computer = computer;
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Student{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", surname='").append(surname).append('\'');
+        sb.append(", dateOfBirth=").append(dateOfBirth);
+        sb.append(", computer=").append(computer);
+        sb.append('}');
+        return sb.toString();
+    }
 }

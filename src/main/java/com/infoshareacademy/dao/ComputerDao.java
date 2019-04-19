@@ -13,19 +13,19 @@ public class ComputerDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Long save(Computer s) {
-        entityManager.persist(s);
-        return s.getId();
+    public Long save(Computer c) {
+        entityManager.persist(c);
+        return c.getId();
     }
 
-    public Computer update(Computer s) {
-        return entityManager.merge(s);
+    public Computer update(Computer c) {
+        return entityManager.merge(c);
     }
 
     public void delete(Long id) {
-        final Computer s = entityManager.find(Computer.class, id);
-        if (s != null) {
-            entityManager.remove(s);
+        final Computer c = entityManager.find(Computer.class, id);
+        if (c != null) {
+            entityManager.remove(c);
         }
     }
 
@@ -34,7 +34,7 @@ public class ComputerDao {
     }
 
     public List<Computer> findAll() {
-        final Query query = entityManager.createQuery("SELECT s FROM Computer s");
+        final Query query = entityManager.createQuery("SELECT c FROM Computer c");
 
         return query.getResultList();
     }

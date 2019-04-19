@@ -1,30 +1,36 @@
 package com.infoshareacademy.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name= "COMPUTERS")
+@Table(name = "COMPUTERS")
 public class Computer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "brand", length = 19)
+    @Column(name = "name")
     @NotNull
-    private String brand;
+    private String name;
 
-    @Column(name = "model")
+    @Column(name = "os")
     @NotNull
-    private String model;
-
-    @Column(name = "serial")
-    @NotNull
-    private String serial;
+    private String operatingSystem;
 
     public Computer() {
+    }
+
+    public Computer(String name, String operatingSystem) {
+        this.name = name;
+        this.operatingSystem = operatingSystem;
     }
 
     public Long getId() {
@@ -35,37 +41,29 @@ public class Computer {
         this.id = id;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getName() {
+        return name;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getModel() {
-        return model;
+    public String getOperatingSystem() {
+        return operatingSystem;
     }
 
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
+    public void setOperatingSystem(String operatingSystem) {
+        this.operatingSystem = operatingSystem;
     }
 
     @Override
     public String toString() {
-        return "Computer{" +
-                "id=" + id +
-                ", brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", serial='" + serial + '\'' +
-                '}';
+        final StringBuffer sb = new StringBuffer("Computer{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", operatingSystem='").append(operatingSystem).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -3,18 +3,14 @@ package com.infoshareacademy.web;
 import com.infoshareacademy.dao.ComputerDao;
 import com.infoshareacademy.model.Computer;
 import java.io.IOException;
-import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 @WebServlet(urlPatterns = "/computer")
 public class ComputerServlet extends HttpServlet {
@@ -24,10 +20,9 @@ public class ComputerServlet extends HttpServlet {
     @Inject
     private ComputerDao computerDao;
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final String action = req.getParameter("action");
         LOG.info("Requested action: {}", action);
@@ -49,9 +44,8 @@ public class ComputerServlet extends HttpServlet {
         }
     }
 
-    private void updateComputer(HttpServletRequest req,
-                               HttpServletResponse resp)
-            throws IOException {
+    private void updateComputer(HttpServletRequest req, HttpServletResponse resp)
+        throws IOException {
         final Long id = Long.parseLong(req.getParameter("id"));
         LOG.info("Updating Computer with id = {}", id);
 
@@ -59,9 +53,8 @@ public class ComputerServlet extends HttpServlet {
         if (existingComputer == null) {
             LOG.info("No Computer found for id = {}, nothing to be updated", id);
         } else {
-            existingComputer.setBrand(req.getParameter("brand"));
-            existingComputer.setModel(req.getParameter("model"));
-            existingComputer.setSerial(req.getParameter("serial"));
+            existingComputer.setName(req.getParameter("name"));
+            existingComputer.setOperatingSystem(req.getParameter("os"));
 
             computerDao.update(existingComputer);
             LOG.info("Computer object updated: {}", existingComputer);
@@ -72,12 +65,11 @@ public class ComputerServlet extends HttpServlet {
     }
 
     private void addComputer(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final Computer p = new Computer();
-        p.setBrand(req.getParameter("brand"));
-        p.setModel(req.getParameter("model"));
-        p.setSerial(req.getParameter("serial"));
+        p.setName(req.getParameter("name"));
+        p.setOperatingSystem(req.getParameter("os"));
 
         computerDao.save(p);
         LOG.info("Saved a new Computer object: {}", p);
