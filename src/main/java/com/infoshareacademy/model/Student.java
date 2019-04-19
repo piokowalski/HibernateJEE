@@ -1,11 +1,6 @@
 package com.infoshareacademy.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -28,6 +23,11 @@ public class Student {
     @Column(name ="birthday")
     private LocalDate birthday;
 
+    @OneToOne
+    @JoinColumn(name ="computer_id", unique = true)
+    private Computer computer;
+
+
     public String getSurname() {
         return surname;
     }
@@ -48,7 +48,7 @@ public class Student {
 
     }
 
-    public Student(String name, String surname, LocalDate birthday) {
+    public Student(String name, String surname, LocalDate birthday, Computer computer) {
         this.name = name;
         this.surname = surname;
         this.birthday = birthday;
@@ -74,6 +74,10 @@ public class Student {
         this.name = name;
     }
 
+    public Computer getComputer() {
+        return computer;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -81,6 +85,12 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthday=" + birthday +
+                ", computer=" + computer +
                 '}';
     }
+
+    public void setComputer(Computer computer) {
+        this.computer = computer;
+    }
+
 }

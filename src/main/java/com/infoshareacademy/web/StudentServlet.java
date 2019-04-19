@@ -29,6 +29,7 @@ public class StudentServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
+
         // Test data
         // Students
         studentDao.save(new Student("Michal"));
