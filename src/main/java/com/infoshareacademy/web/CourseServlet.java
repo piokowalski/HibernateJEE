@@ -24,7 +24,7 @@ public class CourseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final String action = req.getParameter("action");
         LOG.info("Requested action: {}", action);
@@ -45,7 +45,7 @@ public class CourseServlet extends HttpServlet {
     }
 
     private void addCourse(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final Course p = new Course();
         p.setName(req.getParameter("name"));
@@ -75,3 +75,4 @@ public class CourseServlet extends HttpServlet {
         }
     }
 }
+

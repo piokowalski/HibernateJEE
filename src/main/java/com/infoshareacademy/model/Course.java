@@ -47,9 +47,9 @@ public class Course {
         final StringBuffer sb = new StringBuffer("Course{");
         sb.append("name='").append(name).append('\'');
         sb.append(", students=").append(students != null ? students
-                .stream()
-                .map(Student::getSurname)
-                .collect(Collectors.joining(", ")) : "");
+            .stream()
+            .map(Student::getSurname)
+            .collect(Collectors.joining(", ")) : "");
         sb.append('}');
         return sb.toString();
     }

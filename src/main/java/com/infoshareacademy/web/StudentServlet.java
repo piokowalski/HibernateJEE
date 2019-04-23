@@ -7,6 +7,7 @@ import com.infoshareacademy.dao.StudentDao;
 import com.infoshareacademy.model.Address;
 import com.infoshareacademy.model.Computer;
 import com.infoshareacademy.model.Course;
+import com.infoshareacademy.model.CourseSummary;
 import com.infoshareacademy.model.Student;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -74,19 +75,19 @@ public class StudentServlet extends HttpServlet {
 
         // Students
         Student s1 = new Student("Michal",
-                "Graczyk",
-                LocalDate.of(1980, 11, 12),
-                c1,
-                a1,
-                Arrays.asList(course1, course2, course3));
+            "Graczyk",
+            LocalDate.of(1980, 11, 12),
+            c1,
+            a1,
+            Arrays.asList(course1, course2, course3));
         studentDao.save(s1);
 
         Student s2 = new Student("Marek",
-                "Malinovsky",
-                LocalDate.of(1960, 5, 13),
-                c2,
-                a1,
-                Arrays.asList(course2, course3));
+            "Malinovsky",
+            LocalDate.of(1960, 5, 13),
+            c2,
+            a1,
+            Arrays.asList(course2, course3));
         studentDao.save(s2);
 
         LOG.info("System time zone is: {}", ZoneId.systemDefault());
@@ -94,7 +95,7 @@ public class StudentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final String action = req.getParameter("action");
         LOG.info("Requested action: {}", action);
@@ -111,13 +112,17 @@ public class StudentServlet extends HttpServlet {
             deleteStudent(req, resp);
         } else if (action.equals("update")) {
             updateStudent(req, resp);
+        } else if (action.equals("bornAfter")) {
+            findAllBornAfter(req, resp);
+        } else if (action.equals("summary")) {
+            summary(req, resp);
         } else {
             resp.getWriter().write("Unknown action.");
         }
     }
 
     private void updateStudent(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
         final Long id = Long.parseLong(req.getParameter("id"));
         LOG.info("Updating Student with id = {}", id);
 
@@ -155,7 +160,7 @@ public class StudentServlet extends HttpServlet {
     }
 
     private void addStudent(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+        throws IOException {
 
         final Student p = new Student();
         p.setName(req.getParameter("name"));
@@ -193,6 +198,18 @@ public class StudentServlet extends HttpServlet {
         findAll(req, resp);
     }
 
+    private void findAllBornAfter(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String date = req.getParameter("date");
+        LocalDate localDate = LocalDate.parse(date);
+
+        final List<Student> result = studentDao.findBornAfter(localDate);
+
+        LOG.info("Found {} objects", result.size());
+        for (Student p : result) {
+            resp.getWriter().write(p.toString() + "\n");
+        }
+    }
+
     private void findAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final List<Student> result = studentDao.findAll();
         LOG.info("Found {} objects", result.size());
@@ -200,4 +217,13 @@ public class StudentServlet extends HttpServlet {
             resp.getWriter().write(p.toString() + "\n");
         }
     }
+
+    private void summary(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        final List<CourseSummary> result = courseDao.getCoursesSummary();
+        LOG.info("Found {} objects", result.size());
+        for (CourseSummary p : result) {
+            resp.getWriter().write(p.toString() + "\n");
+        }
+    }
 }
+

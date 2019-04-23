@@ -1,7 +1,9 @@
 package com.infoshareacademy.dao;
 
 import com.infoshareacademy.model.Course;
+import com.infoshareacademy.model.CourseSummary;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -37,6 +39,20 @@ public class CourseDao {
         final Query query = entityManager.createQuery("SELECT s FROM Course s");
 
         return query.getResultList();
+    }
+
+    public List<CourseSummary> getCoursesSummary() {
+        return findAll().stream()
+            .map(c -> {
+                String courseName = c.getName();
+
+                List<String> attendees = c.getStudents().stream()
+                    .map(s -> s.getName() + " " + s.getSurname())
+                    .collect(Collectors.toList());
+
+                return new CourseSummary(courseName, attendees);
+            })
+            .collect(Collectors.toList());
     }
 
 }

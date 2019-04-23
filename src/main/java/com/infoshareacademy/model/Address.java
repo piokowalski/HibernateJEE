@@ -1,7 +1,8 @@
 package com.infoshareacademy.model;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
 
 @Entity
 @Table(name = "ADDRESSES")
@@ -79,9 +79,10 @@ public class Address {
         sb.append("id=").append(id);
         sb.append(", street='").append(street).append('\'');
         sb.append(", city='").append(city).append('\'');
-        sb.append(", students=").append(students.stream()
-                .map(s -> s.getId().toString())
-                .collect(Collectors.joining(", ")));
+        sb.append(", students=").append(students
+            .stream()
+            .map(s -> s.getId().toString())
+            .collect(joining(", ")));
         sb.append('}');
         return sb.toString();
     }
