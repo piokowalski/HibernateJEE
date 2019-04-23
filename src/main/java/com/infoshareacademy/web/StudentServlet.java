@@ -1,7 +1,9 @@
 package com.infoshareacademy.web;
 
+import com.infoshareacademy.dao.AddressDao;
 import com.infoshareacademy.dao.ComputerDao;
 import com.infoshareacademy.dao.StudentDao;
+import com.infoshareacademy.model.Address;
 import com.infoshareacademy.model.Computer;
 import com.infoshareacademy.model.Student;
 import java.io.IOException;
@@ -29,11 +31,22 @@ public class StudentServlet extends HttpServlet {
     @Inject
     private ComputerDao computerDao;
 
+    @Inject
+    private AddressDao addressDao;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
         // Test data
+
+        // Addresses
+        Address a1 = new Address("Grunwaldzka 472B", "Gdansk");
+        addressDao.save(a1);
+
+        Address a2 = new Address("Wladyslawa 4", "Gdynia");
+        addressDao.save(a2);
+
         // Computers
         Computer c1 = new Computer("Xiaomi Lepsze", "Windows XP SP2");
         computerDao.save(c1);

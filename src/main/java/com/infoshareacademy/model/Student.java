@@ -2,14 +2,7 @@ package com.infoshareacademy.model;
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -36,6 +29,10 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "computer_id", unique = true)
     private Computer computer;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     public Student() {
 
