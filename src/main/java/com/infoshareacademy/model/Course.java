@@ -46,10 +46,10 @@ public class Course {
     public String toString() {
         final StringBuffer sb = new StringBuffer("Course{");
         sb.append("name='").append(name).append('\'');
-        sb.append(", students=").append(students
+        sb.append(", students=").append(students != null ? students
                 .stream()
                 .map(Student::getSurname)
-                .collect(Collectors.joining(", ")));
+                .collect(Collectors.joining(", ")) : "");
         sb.append('}');
         return sb.toString();
     }

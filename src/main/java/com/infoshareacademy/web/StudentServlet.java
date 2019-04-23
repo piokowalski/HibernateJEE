@@ -142,6 +142,10 @@ public class StudentServlet extends HttpServlet {
             Address address = addressDao.findById(aid);
             existingStudent.setAddress(address);
 
+            String courseName = req.getParameter("courseName");
+            Course course = courseDao.findByName(courseName);
+            existingStudent.getCourses().add(course);
+
             studentDao.update(existingStudent);
             LOG.info("Student object updated: {}", existingStudent);
         }
@@ -167,6 +171,10 @@ public class StudentServlet extends HttpServlet {
         Long aid = Long.valueOf(aidStr);
         Address address = addressDao.findById(aid);
         p.setAddress(address);
+
+        String courseName = req.getParameter("courseName");
+        Course course = courseDao.findByName(courseName);
+        p.setCourses(Arrays.asList(course));
 
         studentDao.save(p);
         LOG.info("Saved a new Student object: {}", p);
