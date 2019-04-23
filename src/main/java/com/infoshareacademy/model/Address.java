@@ -1,7 +1,17 @@
 package com.infoshareacademy.model;
 
-import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "ADDRESSES")
@@ -9,7 +19,7 @@ public class Address {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // autoincrement w MySQL
     private Long id;
 
     @Column(name = "street", length = 64)
@@ -20,11 +30,11 @@ public class Address {
     @NotNull
     private String city;
 
-//    @OneToMany(name = "student_address")
-//    @NotNull
-//    private String address;
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    private List<Student> students;
 
-    public Address(){}
+    public Address() {
+    }
 
     public Address(String street, String city) {
         this.street = street;
@@ -55,12 +65,24 @@ public class Address {
         this.city = city;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     @Override
     public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                '}';
+        final StringBuffer sb = new StringBuffer("Address{");
+        sb.append("id=").append(id);
+        sb.append(", street='").append(street).append('\'');
+        sb.append(", city='").append(city).append('\'');
+        sb.append(", students=").append(students.stream()
+                .map(s -> s.getId().toString())
+                .collect(Collectors.joining(", ")));
+        sb.append('}');
+        return sb.toString();
     }
 }

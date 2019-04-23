@@ -2,7 +2,18 @@ package com.infoshareacademy.model;
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import javax.persistence.*;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -34,15 +45,24 @@ public class Student {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @ManyToMany
+    @JoinTable(name = "STUDENTS_TO_COURSES",
+            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), // STUDENTS
+            inverseJoinColumns = @JoinColumn(name = "course_name", referencedColumnName = "name"))// COURSES
+    private List<Course> courses;
+
     public Student() {
 
     }
 
-    public Student(String name, String surname, LocalDate dateOfBirth, Computer computer) {
+    public Student(String name, String surname, LocalDate dateOfBirth, Computer computer,
+                   Address address, List<Course> courses) {
         this.name = name;
         this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.computer = computer;
+        this.address = address;
+        this.courses = courses;
     }
 
     public Long getId() {
@@ -85,6 +105,22 @@ public class Student {
         this.computer = computer;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Student{");
@@ -93,6 +129,8 @@ public class Student {
         sb.append(", surname='").append(surname).append('\'');
         sb.append(", dateOfBirth=").append(dateOfBirth);
         sb.append(", computer=").append(computer);
+        sb.append(", address=").append(address);
+        sb.append(", courses=").append(courses);
         sb.append('}');
         return sb.toString();
     }

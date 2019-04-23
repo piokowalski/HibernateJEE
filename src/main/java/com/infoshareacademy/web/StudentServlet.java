@@ -2,13 +2,16 @@ package com.infoshareacademy.web;
 
 import com.infoshareacademy.dao.AddressDao;
 import com.infoshareacademy.dao.ComputerDao;
+import com.infoshareacademy.dao.CourseDao;
 import com.infoshareacademy.dao.StudentDao;
 import com.infoshareacademy.model.Address;
 import com.infoshareacademy.model.Computer;
+import com.infoshareacademy.model.Course;
 import com.infoshareacademy.model.Student;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -17,10 +20,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet(urlPatterns = "/student")
+@Transactional
 public class StudentServlet extends HttpServlet {
 
     private Logger LOG = LoggerFactory.getLogger(StudentServlet.class);
@@ -34,17 +39,30 @@ public class StudentServlet extends HttpServlet {
     @Inject
     private AddressDao addressDao;
 
+    @Inject
+    private CourseDao courseDao;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
         // Test data
 
+        // Courses
+        Course course1 = new Course("JJDD6");
+        courseDao.save(course1);
+
+        Course course2 = new Course("JJDZ6");
+        courseDao.save(course2);
+
+        Course course3 = new Course("JJFD9");
+        courseDao.save(course3);
+
         // Addresses
         Address a1 = new Address("Grunwaldzka 472B", "Gdansk");
         addressDao.save(a1);
 
-        Address a2 = new Address("Wladyslawa 4", "Gdynia");
+        Address a2 = new Address("Luzycka 12d", "Gdynia");
         addressDao.save(a2);
 
         // Computers
@@ -56,15 +74,19 @@ public class StudentServlet extends HttpServlet {
 
         // Students
         Student s1 = new Student("Michal",
-            "Graczyk",
-            LocalDate.of(1980, 11, 12),
-            c1);
+                "Graczyk",
+                LocalDate.of(1980, 11, 12),
+                c1,
+                a1,
+                Arrays.asList(course1, course2, course3));
         studentDao.save(s1);
 
         Student s2 = new Student("Marek",
-            "Malinovsky",
-            LocalDate.of(1960, 5, 13),
-            c2);
+                "Malinovsky",
+                LocalDate.of(1960, 5, 13),
+                c2,
+                a1,
+                Arrays.asList(course2, course3));
         studentDao.save(s2);
 
         LOG.info("System time zone is: {}", ZoneId.systemDefault());
@@ -72,7 +94,7 @@ public class StudentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException {
+            throws IOException {
 
         final String action = req.getParameter("action");
         LOG.info("Requested action: {}", action);
@@ -95,7 +117,7 @@ public class StudentServlet extends HttpServlet {
     }
 
     private void updateStudent(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException {
+            throws IOException {
         final Long id = Long.parseLong(req.getParameter("id"));
         LOG.info("Updating Student with id = {}", id);
 
@@ -115,6 +137,11 @@ public class StudentServlet extends HttpServlet {
             Computer computer = computerDao.findById(cid); // != null
             existingStudent.setComputer(computer);
 
+            String aidStr = req.getParameter("aid"); // address od
+            Long aid = Long.valueOf(aidStr);
+            Address address = addressDao.findById(aid);
+            existingStudent.setAddress(address);
+
             studentDao.update(existingStudent);
             LOG.info("Student object updated: {}", existingStudent);
         }
@@ -124,7 +151,7 @@ public class StudentServlet extends HttpServlet {
     }
 
     private void addStudent(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException {
+            throws IOException {
 
         final Student p = new Student();
         p.setName(req.getParameter("name"));
@@ -135,6 +162,11 @@ public class StudentServlet extends HttpServlet {
         Long cid = Long.valueOf(cidStr);
         Computer computer = computerDao.findById(cid); // != null
         p.setComputer(computer);
+
+        String aidStr = req.getParameter("aid"); // address od
+        Long aid = Long.valueOf(aidStr);
+        Address address = addressDao.findById(aid);
+        p.setAddress(address);
 
         studentDao.save(p);
         LOG.info("Saved a new Student object: {}", p);
@@ -161,4 +193,3 @@ public class StudentServlet extends HttpServlet {
         }
     }
 }
-
